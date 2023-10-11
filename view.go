@@ -174,6 +174,7 @@ func (v *view) pollingFlag() (alreadyPolling bool, unflag func()) {
 // function to be fired in a goroutine, but then halted even if the fetch
 // function is in the middle of a blocking query.
 func (v *view) poll(viewCh chan<- *view, errCh chan<- error) {
+	fmt.Println("polling started")
 	var retries int
 	v.event(events.TrackStart{ID: v.ID()})
 
@@ -273,6 +274,7 @@ func (v *view) poll(viewCh chan<- *view, errCh chan<- error) {
 // result of doneCh and errCh. It is assumed that only one instance of fetch
 // is running per view and therefore no locking or mutexes are used.
 func (v *view) fetch(doneCh, successCh chan<- struct{}, errCh chan<- error) {
+	fmt.Println("fetching in view.go")
 	v.event(events.Trace{ID: v.ID(), Message: "starting fetch"})
 
 	var allowStale bool

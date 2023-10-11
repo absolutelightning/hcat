@@ -74,6 +74,7 @@ func NewCatalogServiceQuery(s string) (*CatalogServiceQuery, error) {
 // Fetch queries the Consul API defined by the given client and returns a slice
 // of CatalogService objects.
 func (d *CatalogServiceQuery) Fetch(clients dep.Clients) (interface{}, *dep.ResponseMetadata, error) {
+	fmt.Println("fetching catalog service query")
 	select {
 	case <-d.stopCh:
 		return nil, nil, ErrStopped
@@ -123,6 +124,9 @@ func (d *CatalogServiceQuery) Fetch(clients dep.Clients) (interface{}, *dep.Resp
 		LastIndex:   qm.LastIndex,
 		LastContact: qm.LastContact,
 	}
+
+	fmt.Println("returning list")
+	fmt.Println(list)
 
 	return list, rm, nil
 }

@@ -234,6 +234,8 @@ func (w *Watcher) Wait(ctx context.Context) error {
 func (w *Watcher) Watch(ctx context.Context, notifierCh chan string) error {
 	w.stopCh.drain()
 
+	fmt.Println("inside hcat watch method")
+
 	// send waiting notification, only used for testing
 	select {
 	case w.waitingCh <- struct{}{}:
@@ -260,6 +262,8 @@ func (w *Watcher) Watch(ctx context.Context, notifierCh chan string) error {
 // cache update and buffering check. It returns a list (as a map to dedup) of
 // the notifiers that need to be notified (handled ball caller).
 func (w *Watcher) wait(ctx context.Context) (map[string]struct{}, error) {
+	fmt.Println("inside wait")
+
 	type notifierMap map[string]struct{}
 	empty := struct{}{}
 	// send waiting notification, only used for testing
@@ -270,7 +274,11 @@ func (w *Watcher) wait(ctx context.Context) (map[string]struct{}, error) {
 
 	dataUpdate := func(v *view, notifiers notifierMap) notifierMap {
 		id := v.ID()
+		fmt.Println("in dataUpdate")
+		fmt.Println("id = ", id)
+		fmt.Println("v.Data()", v.Data())
 		w.cache.Save(id, v.Data())
+		fmt.Println("saved in store id -> v.Data()", id, v.Data())
 		for _, n := range w.tracker.notifiersFor(v) {
 			if n.Notify(v.Data()) && !w.Buffering(n) {
 				notifiers[n.ID()] = empty
